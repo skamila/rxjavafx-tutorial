@@ -32,9 +32,14 @@ public class Example028 extends Application {
 
 		JavaFxObservable.actionEventsOf(button).map(event -> textField.getText()).subscribe(listView.getItems()::add);
 
-		JavaFxObservable.emitOnChanged(listView.getItems())
-		.flatMapSingle(items -> Observable.fromIterable(items).map(String::length).toList())
-		.subscribe(lenghtsListView.getItems()::setAll);
+		// tylko jeden mamy przesylac
+		JavaFxObservable.additionsOf(listView.getItems())
+				.map(a -> a.length())
+				.subscribe(a -> lenghtsListView.getItems().add(a));
+
+//		avaFxObservable.emitOnChanged(listView.getItems())
+////		.flatMapSingle(items -> Observable.fromIterable(items).map(String::length).toList())
+////		.subscribe(lenghtsListView.getItems()::setAll);J
 	}
 
 }

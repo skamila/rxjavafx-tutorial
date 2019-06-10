@@ -1,7 +1,9 @@
 package com.github.pkrysztofiak.rxjavafxtutorial.tasks;
 
+import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -29,8 +31,15 @@ public class Task007 extends Application {
 		stage.setScene(scene);
 		stage.show();
 
-		JavaFxObservable.actionEventsOf(button).map(event -> textField.getText()).subscribe(listView.getItems()::add);
+		JavaFxObservable.actionEventsOf(button)
+				.map(event -> textField.getText())
+				.subscribe(listView.getItems()::add);
 
-		//your code here
+		JavaFxObservable.emitOnChanged(listView.getItems())
+				.flatMapSingle(items -> Observable.fromIterable(items).map(String::length).distinct().toList())
+				.doOnNext(a -> a.sort((b,c) -> b.compareTo(c)))
+				.subscribe(a -> distinctSortedlenghtsListView.getItems().setAll(a));
+
+
 	}
 }
